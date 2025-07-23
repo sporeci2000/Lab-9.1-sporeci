@@ -1,35 +1,53 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import { AlertBox } from './components/AlertBox/AlertBox';
+import { UserProfileCard } from './components/UserProfileCard/UserProfileCard';
+import { ProductDisplay } from './components/ProductDisplay/ProductDisplay';
 
-function App() {
-  const [count, setCount] = useState(0)
+const user = {
+  id: '1',
+  name: 'John Doe',
+  email: 'john.doe@example.com',
+  role: 'Software Engineer',
+  avatarUrl: 'https://example.com/avatar.jpg'
+};
+
+const product = {
+  id: '1',
+  name: 'Wireless Headphones',
+  price: 199.99,
+  description: 'High-quality wireless headphones with noise cancellation.',
+  imageUrl: 'https://example.com/headphones.jpg',
+  inStock: true
+};
+
+export default function App() {
+  const [showAlert, setShowAlert] = useState(false);
+  const [cartItems, setCartItems] = useState<string[]>([]);
+
+  const handleAddToCart = (productId: string) => {
+    setCartItems([...cartItems, productId]);
+    setShowAlert(true);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="p-4">
+      {showAlert && (
+        <AlertBox
+          type="success"
+          message="Product added to cart!"
+          onClose={() => setShowAlert(false)}
+        />
+      )}
 
-export default App
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <UserProfileCard user={user} showEmail={true} showRole={true} />
+        <ProductDisplay
+          product={product}
+          showDescription={true}
+          showStockStatus={true}
+          onAddToCart={handleAddToCart}
+        />
+      </div>
+    </div>
+  );
+}
